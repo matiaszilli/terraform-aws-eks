@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "mychart.fullname" . }}
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      name: node-configs
+  template:
+    metadata:
+      labels:
+        name: node-configs
+    spec:
+      volumes:
+        - name: hostfs-etc
+          hostPath:
+            path: /etc
+      initContainers:
+        - name: delete-ekshostpodlimit
+          image: busybox:1.32.0
+          command:
+            - /bin/sh
+            - -xc
+            - |
+              # Delete EKS pods per host limit.
+              sleep 60
+              # Download jq
+              wget -O jq https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+              chmod +x jq
+              ls -la
+              # Delete maxPods property from kubelet config
+              # Other method: cat /host/etc/kubernetes/kubelet/kubelet-config.json | sed '/maxPods/d' | sed 's/\(.*\),/\1/' > /host/etc/kubernetes/kubelet/kubelet-config.jsons
+              ./jq 'del(.maxPods)' /host/etc/kubernetes/kubelet/kubelet-config.json > /host/etc/kubernetes/kubelet/kubelet-config.jsons
+              mv /host/etc/kubernetes/kubelet/kubelet-config.jsons /host/etc/kubernetes/kubelet/kubelet-config.json
+              # Configure kubelet service to restart
+              cat /host/etc/systemd/system/kubelet.service
+              sed -i 's/Restart=on-failure/Restart=always/g' /host/etc/systemd/system/kubelet.service
+              # Kill kubelet and it will restart
+              KPID=$(pgrep kubelet)
+              echo $KPID
+              kill -9 $KPID && exit 0
+          resources:
+            limits:
+              cpu: 100m
+              memory: 100Mi
+            requests:
+              cpu: 100m
+              memory: 100Mi
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: hostfs-etc
+              mountPath: /host/etc
+              readOnly: false
+      containers:
+        - name: pause
+          image: gcr.io/google_containers/pause
+          resources:
+            limits:
+              cpu: 50m
+              memory: 50Mi
+            requests:
+              cpu: 50m
+              memory: 50Mi

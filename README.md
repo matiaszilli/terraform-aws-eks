@@ -146,6 +146,7 @@ MIT Licensed. See [LICENSE](https://github.com/terraform-aws-modules/terraform-a
 |------|---------|
 | terraform | >= 0.12.9, != 0.13.0 |
 | aws | >= 3.3.0 |
+| helm | >= 1.3.0 |
 | kubernetes | >= 1.11.1 |
 | local | >= 1.4 |
 | null | >= 2.1 |
@@ -169,6 +170,7 @@ MIT Licensed. See [LICENSE](https://github.com/terraform-aws-modules/terraform-a
 |------|-------------|------|---------|:--------:|
 | attach\_worker\_cni\_policy | Whether to attach the Amazon managed `AmazonEKS_CNI_Policy` IAM policy to the default worker IAM role. WARNING: If set `false` the permissions must be assigned to the `aws-node` DaemonSet pods via another method or nodes will not be able to join the cluster. | `bool` | `true` | no |
 | aws\_auth\_additional\_labels | Additionnal kubernetes labels applied on aws-auth ConfigMap | `map(string)` | `{}` | no |
+| calico\_cni\_config | Map of values to configure Calico CNI settings. See `calico_cni` module's documentaton for more details | `any` | `{}` | no |
 | cluster\_create\_endpoint\_private\_access\_sg\_rule | Whether to create security group rules for the access to the Amazon EKS private API server endpoint. | `bool` | `false` | no |
 | cluster\_create\_security\_group | Whether to create a security group for the cluster or attach the cluster to `cluster_security_group_id`. | `bool` | `true` | no |
 | cluster\_create\_timeout | Timeout value when creating the EKS cluster. | `string` | `"30m"` | no |

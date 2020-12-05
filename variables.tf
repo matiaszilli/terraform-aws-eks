@@ -367,3 +367,9 @@ variable "fargate_pod_execution_role_name" {
   type        = string
   default     = null
 }
+
+variable "calico_cni_config" {
+  description = "Map of values to configure Calico CNI settings. See `calico_cni` module's documentaton for more details"
+  type        = any
+  default     = {}
+}

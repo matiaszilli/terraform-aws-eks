@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: aws-node
+  annotations:
+    "helm.sh/hook": "pre-install"
+spec:
+  selector:
+      matchLabels:
+        name: aws-node
+  template:
+    metadata:
+      labels:
+        name: aws-node
+    spec:
+      containers:
+      - name: pause
+        image: gcr.io/google_containers/pause

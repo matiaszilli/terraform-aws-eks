@@ -8,5 +8,6 @@ terraform {
     template   = ">= 2.1"
     random     = ">= 2.1"
     kubernetes = ">= 1.11.1"
+    helm       = ">= 1.3.0"
   }
 }
