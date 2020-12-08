@@ -12,6 +12,7 @@ spec:
       labels:
         name: node-configs
     spec:
+      hostPID: true
       volumes:
         - name: hostfs-etc
           hostPath:
